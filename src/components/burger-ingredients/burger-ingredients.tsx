@@ -1,5 +1,5 @@
-import { useMemo, useRef, useState, useEffect } from 'react';
 import { Tab, Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
+import { useMemo, useRef, useState, useEffect } from 'react';
 
 import type { TIngredient } from '@utils/types';
 
@@ -40,13 +40,12 @@ export const BurgerIngredients = ({
     return constructorItems.filter((i) => i._id === ingredient._id).length;
   };
 
-  // 👉 Scroll to section
   const scrollTo = (ref: React.RefObject<HTMLDivElement>, tab: typeof currentTab) => {
     ref.current?.scrollIntoView({ behavior: 'smooth' });
     setCurrentTab(tab);
   };
 
-  // 👉 Sync tab with scroll
+
   useEffect(() => {
     const handleScroll = () => {
       if (!containerRef.current) return;

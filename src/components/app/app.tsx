@@ -3,10 +3,9 @@ import { useEffect, useState } from 'react';
 import { AppHeader } from '@components/app-header/app-header';
 import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
 import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredients';
-import { Modal } from '@components/modal/modal';
 import { IngredientDetails } from '@components/ingredient-details/ingredient-details';
+import { Modal } from '@components/modal/modal';
 import { OrderDetails } from '@components/order-details/order-details';
-
 import { fetchIngredients } from '@services/api';
 
 import type { TIngredient, TConstructorItem } from '@utils/types';

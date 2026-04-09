@@ -1,6 +1,6 @@
+import { CloseIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { CloseIcon } from '@krgaa/react-developer-burger-ui-components';
 
 import styles from './modal.module.css';
 
