@@ -1,15 +1,12 @@
-import { Button } from '@krgaa/react-developer-burger-ui-components';
-
 import type { TIngredient } from '@utils/types';
 
 import styles from './ingredient-details.module.css';
 
 type Props = {
   ingredient: TIngredient;
-  onAdd: (i: TIngredient) => void;
 };
 
-export const IngredientDetails = ({ ingredient, onAdd }: Props) => {
+export const IngredientDetails = ({ ingredient }: Props): React.JSX.Element => {
   return (
     <div className={styles.container}>
       <img src={ingredient.image_large} alt={ingredient.name} className={styles.image} />
@@ -18,32 +15,33 @@ export const IngredientDetails = ({ ingredient, onAdd }: Props) => {
 
       <ul className={styles.nutrients}>
         <li>
-          <p className="text text_type_main-default text_color_inactive">Калории</p>
-          <p className="text text_type_digits-default">{ingredient.calories}</p>
+          <p className="text text_type_main-default text_color_inactive">Калории,ккал</p>
+          <p className="text text_type_digits-default text_color_inactive">
+            {ingredient.calories}
+          </p>
         </li>
+
         <li>
-          <p className="text text_type_main-default text_color_inactive">Белки</p>
-          <p className="text text_type_digits-default">{ingredient.proteins}</p>
+          <p className="text text_type_main-default text_color_inactive">Белки, г</p>
+          <p className="text text_type_digits-default text_color_inactive">
+            {ingredient.proteins}
+          </p>
         </li>
+
         <li>
-          <p className="text text_type_main-default text_color_inactive">Жиры</p>
-          <p className="text text_type_digits-default">{ingredient.fat}</p>
+          <p className="text text_type_main-default text_color_inactive">Жиры, г</p>
+          <p className="text text_type_digits-default text_color_inactive">
+            {ingredient.fat}
+          </p>
         </li>
+
         <li>
-          <p className="text text_type_main-default text_color_inactive">Углеводы</p>
-          <p className="text text_type_digits-default">{ingredient.carbohydrates}</p>
+          <p className="text text_type_main-default text_color_inactive">Углеводы, г</p>
+          <p className="text text_type_digits-default text_color_inactive">
+            {ingredient.carbohydrates}
+          </p>
         </li>
       </ul>
-
-      <Button
-        htmlType="button"
-        type="primary"
-        size="large"
-        extraClass="mt-10"
-        onClick={() => onAdd(ingredient)}
-      >
-        Добавить в заказ
-      </Button>
     </div>
   );
 };

@@ -2,6 +2,8 @@ import { CloseIcon } from '@krgaa/react-developer-burger-ui-components';
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
+import { ModalOverlay } from '@components/modal-overlay/modal-overlay';
+
 import styles from './modal.module.css';
 
 type Props = {
@@ -10,27 +12,41 @@ type Props = {
   onClose: () => void;
 };
 
-export const Modal = ({ title, children, onClose }: Props) => {
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
+export const Modal = ({ title, children, onClose }: Props): React.JSX.Element => {
+  useEffect((): (() => void) => {
+    const handler = (e: KeyboardEvent): void => {
       if (e.key === 'Escape') onClose();
     };
 
     document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
+
+    return (): void => {
+      document.removeEventListener('keydown', handler);
+    };
   }, [onClose]);
 
+  const root = document.getElementById('root');
+
+  if (!root) {
+    throw new Error('Root element not found');
+  }
+
   return createPortal(
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+    <div className={`${styles.root_style}`}>
+      <ModalOverlay onClose={onClose} />
+
+      <div
+        className={styles.modal}
+        onClick={(e: React.MouseEvent<HTMLDivElement>): void => e.stopPropagation()}
+      >
         <header className={styles.header}>
           <p className="text text_type_main-medium">{title}</p>
-          <CloseIcon onClick={onClose} />
+          <CloseIcon type="primary" onClick={onClose} />
         </header>
 
         {children}
       </div>
     </div>,
-    document.getElementById('root')!
+    root
   );
 };

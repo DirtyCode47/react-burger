@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { Preloader } from '@krgaa/react-developer-burger-ui-components';
+import { useEffect, useMemo, useState } from 'react';
 
 import { AppHeader } from '@components/app-header/app-header';
 import { BurgerConstructor } from '@components/burger-constructor/burger-constructor';
@@ -8,7 +9,7 @@ import { Modal } from '@components/modal/modal';
 import { OrderDetails } from '@components/order-details/order-details';
 import { fetchIngredients } from '@services/api';
 
-import type { TIngredient, TConstructorItem } from '@utils/types';
+import type { TIngredient } from '@utils/types';
 
 import styles from './app.module.css';
 
@@ -17,48 +18,43 @@ export const App = (): React.JSX.Element => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [constructorItems, setConstructorItems] = useState<TConstructorItem[]>([]);
-
   const [activeIngredient, setActiveIngredient] = useState<TIngredient | null>(null);
   const [orderModalOpen, setOrderModalOpen] = useState(false);
 
   useEffect(() => {
-    const load = async () => {
+    const load = async (): Promise<void> => {
       try {
         setLoading(true);
         const data = await fetchIngredients();
         setIngredients(data.data);
-      } catch (e) {
+      } catch {
         setError('Ошибка загрузки данных');
       } finally {
         setLoading(false);
       }
     };
 
-    load();
+    void load();
   }, []);
 
-  const addIngredient = (item: TIngredient) => {
-    const id = crypto.randomUUID();
+  const constructorItems = useMemo(() => {
+    if (!ingredients.length) return [];
 
-    setConstructorItems((prev) => [...prev, { ...item, id }]);
-  };
+    const bun = ingredients.find((i) => i.type === 'bun');
+    const mains = ingredients.filter((i) => i.type === 'main');
+    const sauce = ingredients.find((i) => i.type === 'sauce');
 
-  const addBun = (bun: TIngredient) => {
-    if (bun.type !== 'bun') return;
+    const result: TIngredient[] = [];
 
-    setConstructorItems((prev) => {
-      const filtered = prev.filter((i) => i.type !== 'bun');
+    if (bun) result.push(bun);
 
-      const existingBun = prev.find((i) => i.type === 'bun');
+    const expandedMains = [...mains, ...mains].slice(0, 9);
+    result.push(...expandedMains);
 
-      if (existingBun && existingBun._id === bun._id) {
-        return prev;
-      }
+    if (sauce) result.push(sauce);
 
-      return [...filtered, { ...bun, id: crypto.randomUUID() }];
-    });
-  };
+    return result;
+  }, [ingredients]);
 
   return (
     <div className={styles.app}>
@@ -69,8 +65,7 @@ export const App = (): React.JSX.Element => {
       </h1>
 
       <main className={`${styles.main} pl-5 pr-5`}>
-        {loading && <p className="text text_type_main-default">Загрузка...</p>}
-
+        {loading && <Preloader />}
         {error && <p className="text text_type_main-default">{error}</p>}
 
         {!loading && !error && (
@@ -83,7 +78,6 @@ export const App = (): React.JSX.Element => {
 
             <BurgerConstructor
               items={constructorItems}
-              setItems={setConstructorItems}
               onOrder={() => setOrderModalOpen(true)}
             />
           </>
@@ -92,23 +86,12 @@ export const App = (): React.JSX.Element => {
 
       {activeIngredient && (
         <Modal title="Детали ингредиента" onClose={() => setActiveIngredient(null)}>
-          <IngredientDetails
-            ingredient={activeIngredient}
-            onAdd={(item) => {
-              if (item.type === 'bun') {
-                addBun(item);
-              } else {
-                addIngredient(item);
-              }
-
-              setActiveIngredient(null);
-            }}
-          />
+          <IngredientDetails ingredient={activeIngredient} />
         </Modal>
       )}
 
       {orderModalOpen && (
-        <Modal title="Заказ оформлен" onClose={() => setOrderModalOpen(false)}>
+        <Modal title="" onClose={() => setOrderModalOpen(false)}>
           <OrderDetails />
         </Modal>
       )}

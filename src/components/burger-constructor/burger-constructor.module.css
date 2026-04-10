@@ -18,16 +18,19 @@
 }
 
 
-
+.drag {
+  width: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+}
 
 .drag:active {
   cursor: grabbing;
 }
 
 
-.bunOffset {
-  padding-left: 32px;
-}
 
 .footer {
   display: flex;
@@ -47,17 +50,7 @@
   gap: 8px;
 }
 
-.drag {
-  width: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: grab;
-}
 
-.content {
-  flex: 1;
-  display: flex;
-  align-items: center;
-}
+
+
 

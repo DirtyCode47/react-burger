@@ -13,6 +13,7 @@ export type TIngredient = {
   __v: number;
 };
 
-export type TConstructorItem = TIngredient & {
-  id: string;
+export type TIngredientsResponse = {
+  success: boolean;
+  data: TIngredient[];
 };
