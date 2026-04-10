@@ -12,18 +12,18 @@
 
 .nutrients {
   display: flex;
+  justify-content: center;
   gap: 20px;
+  width: 100%;
   margin: 0;
   padding: 0;
   list-style: none;
-  justify-content: center;
-  width: 100%;
 }
 
 .nutrients li {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   min-width: 80px;
 }
