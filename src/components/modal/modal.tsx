@@ -25,20 +25,17 @@ export const Modal = ({ title, children, onClose }: Props): React.JSX.Element =>
     };
   }, [onClose]);
 
-  const root = document.getElementById('root');
+  const modalRoot = document.getElementById('modals'); // ✅ исправлено
 
-  if (!root) {
-    throw new Error('Root element not found');
+  if (!modalRoot) {
+    throw new Error('Modal root not found');
   }
 
   return createPortal(
     <div className={`${styles.root_style}`}>
       <ModalOverlay onClose={onClose} />
 
-      <div
-        className={styles.modal}
-        onClick={(e: React.MouseEvent<HTMLDivElement>): void => e.stopPropagation()}
-      >
+      <div className={styles.modal} onClick={(e): void => e.stopPropagation()}>
         <header className={styles.header}>
           <p className="text text_type_main-medium">{title}</p>
           <CloseIcon type="primary" onClick={onClose} />
@@ -47,6 +44,6 @@ export const Modal = ({ title, children, onClose }: Props): React.JSX.Element =>
         {children}
       </div>
     </div>,
-    root
+    modalRoot
   );
 };

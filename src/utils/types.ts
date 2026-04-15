@@ -17,3 +17,10 @@ export type TIngredientsResponse = {
   success: boolean;
   data: TIngredient[];
 };
+
+export type TOrderResponse = {
+  success: boolean;
+  order: {
+    number: number;
+  };
+};
