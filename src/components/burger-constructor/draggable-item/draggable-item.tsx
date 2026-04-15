@@ -10,7 +10,7 @@ import { useAppDispatch } from '@services/hooks';
 
 import type { TIngredient } from '@utils/types';
 
-import styles from './burger-constructor.module.css';
+import styles from './draggable-item.module.css';
 
 type Props = {
   item: TIngredient & { uuid: string };

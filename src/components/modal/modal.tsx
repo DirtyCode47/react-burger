@@ -25,7 +25,7 @@ export const Modal = ({ title, children, onClose }: Props): React.JSX.Element =>
     };
   }, [onClose]);
 
-  const modalRoot = document.getElementById('modals'); // ✅ исправлено
+  const modalRoot = document.getElementById('modals');
 
   if (!modalRoot) {
     throw new Error('Modal root not found');

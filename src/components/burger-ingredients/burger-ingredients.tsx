@@ -6,7 +6,6 @@ import { selectIngredientCounts } from '@services/constructor/slice';
 import { useAppSelector, useAppDispatch } from '@services/hooks';
 import { setIngredient } from '@services/modal/slice';
 
-//import type { TIngredient } from '@utils/types';
 import styles from './burger-ingredients.module.css';
 
 type TTab = 'bun' | 'main' | 'sauce';

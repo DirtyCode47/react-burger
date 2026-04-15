@@ -1,0 +1,17 @@
+.drag {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  cursor: grab;
+}
+
+.drag:active {
+  cursor: grabbing;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
