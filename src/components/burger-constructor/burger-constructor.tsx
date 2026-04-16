@@ -127,7 +127,13 @@ export const BurgerConstructor = (): React.JSX.Element => {
           <CurrencyIcon type="primary" />
         </div>
 
-        <Button htmlType="button" type="primary" size="large" onClick={handleOrder}>
+        <Button
+          htmlType="button"
+          type="primary"
+          size="large"
+          onClick={handleOrder}
+          disabled={!bun}
+        >
           Оформить заказ
         </Button>
       </div>

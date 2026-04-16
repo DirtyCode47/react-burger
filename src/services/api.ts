@@ -2,15 +2,18 @@ import { API_URL } from '@utils/constants';
 
 import type { TIngredientsResponse, TOrderResponse } from '@utils/types';
 
-export const fetchIngredients = async (): Promise<TIngredientsResponse> => {
-  const res = await fetch(`${API_URL}/ingredients`);
-
+const checkResponse = async <T>(res: Response): Promise<T> => {
   if (!res.ok) {
-    throw new Error('Ошибка загрузки ингредиентов');
+    throw new Error('Ошибка сервера');
   }
 
-  const data = (await res.json()) as TIngredientsResponse;
+  const data = (await res.json()) as T;
   return data;
+};
+
+export const fetchIngredients = async (): Promise<TIngredientsResponse> => {
+  const res = await fetch(`${API_URL}/ingredients`);
+  return await checkResponse<TIngredientsResponse>(res);
 };
 
 export const createOrder = async (ingredients: string[]): Promise<TOrderResponse> => {
@@ -22,10 +25,5 @@ export const createOrder = async (ingredients: string[]): Promise<TOrderResponse
     body: JSON.stringify({ ingredients }),
   });
 
-  if (!res.ok) {
-    throw new Error('Ошибка создания заказа');
-  }
-
-  const data = (await res.json()) as TOrderResponse;
-  return data;
+  return await checkResponse<TOrderResponse>(res);
 };

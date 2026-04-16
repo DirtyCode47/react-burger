@@ -20,18 +20,25 @@ const slice = createSlice({
   name: 'constructor',
   initialState,
   reducers: {
-    addIngredient(state, action: PayloadAction<TIngredient>) {
-      const ingredient = action.payload;
+    addIngredient: {
+      reducer(state, action: PayloadAction<TConstructorItem>) {
+        const ingredient = action.payload;
 
-      if (ingredient.type === 'bun') {
-        state.bun = ingredient;
-        return;
-      }
+        if (ingredient.type === 'bun') {
+          state.bun = ingredient;
+          return;
+        }
 
-      state.ingredients.push({
-        ...ingredient,
-        uuid: nanoid(),
-      });
+        state.ingredients.push(ingredient);
+      },
+      prepare(ingredient: TIngredient) {
+        return {
+          payload: {
+            ...ingredient,
+            uuid: nanoid(),
+          },
+        };
+      },
     },
 
     removeIngredient(state, action: PayloadAction<string>) {

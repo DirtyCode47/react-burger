@@ -7,6 +7,7 @@ import { BurgerIngredients } from '@components/burger-ingredients/burger-ingredi
 import { IngredientDetails } from '@components/ingredient-details/ingredient-details';
 import { Modal } from '@components/modal/modal';
 import { OrderDetails } from '@components/order-details/order-details';
+import { clearConstructor } from '@services/constructor/slice';
 import { useAppDispatch, useAppSelector } from '@services/hooks';
 import { fetchIngredientsThunk } from '@services/ingredients/thunks';
 import { clearIngredient } from '@services/modal/slice';
@@ -19,7 +20,9 @@ export const App = (): React.JSX.Element => {
 
   const { loading, error } = useAppSelector((s) => s.ingredients);
   const activeIngredient = useAppSelector((s) => s.modal.ingredient);
+
   const orderNumber = useAppSelector((s) => s.order.number);
+  const orderLoading = useAppSelector((s) => s.order.loading);
 
   useEffect(() => {
     void dispatch(fetchIngredientsThunk());
@@ -51,9 +54,15 @@ export const App = (): React.JSX.Element => {
         </Modal>
       )}
 
-      {orderNumber && (
-        <Modal title="" onClose={() => dispatch(clearOrder())}>
-          <OrderDetails />
+      {(orderLoading || orderNumber) && (
+        <Modal
+          title=""
+          onClose={() => {
+            dispatch(clearOrder());
+            dispatch(clearConstructor());
+          }}
+        >
+          {orderLoading ? <Preloader /> : <OrderDetails />}
         </Modal>
       )}
     </div>
