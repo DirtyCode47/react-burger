@@ -1,23 +1,21 @@
-import { Tab, Counter, CurrencyIcon } from '@krgaa/react-developer-burger-ui-components';
+import { Tab } from '@krgaa/react-developer-burger-ui-components';
 import { useMemo, useRef, useState, useEffect } from 'react';
 
-import type { TIngredient } from '@utils/types';
+import { Ingredient } from '@components/ingredient/ingredient';
+import { selectIngredientCounts } from '@services/constructor/slice';
+import { useAppSelector, useAppDispatch } from '@services/hooks';
+import { setIngredient } from '@services/modal/slice';
 
 import styles from './burger-ingredients.module.css';
 
-type Props = {
-  ingredients: TIngredient[];
-  onIngredientClick: (i: TIngredient) => void;
-  constructorItems?: TIngredient[];
-};
-
 type TTab = 'bun' | 'main' | 'sauce';
 
-export const BurgerIngredients = ({
-  ingredients,
-  onIngredientClick,
-  constructorItems = [],
-}: Props): React.JSX.Element => {
+export const BurgerIngredients = (): React.JSX.Element => {
+  const dispatch = useAppDispatch();
+
+  const ingredients = useAppSelector((s) => s.ingredients.items);
+  const counts = useAppSelector(selectIngredientCounts);
+
   const [currentTab, setCurrentTab] = useState<TTab>('bun');
 
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -25,43 +23,33 @@ export const BurgerIngredients = ({
   const mainRef = useRef<HTMLDivElement | null>(null);
   const sauceRef = useRef<HTMLDivElement | null>(null);
 
-  const grouped = useMemo((): Record<TTab, TIngredient[]> => {
-    return {
+  const grouped = useMemo(
+    () => ({
       bun: ingredients.filter((i) => i.type === 'bun'),
       main: ingredients.filter((i) => i.type === 'main'),
       sauce: ingredients.filter((i) => i.type === 'sauce'),
-    };
-  }, [ingredients]);
-
-  const getCount = (ingredient: TIngredient): number => {
-    if (ingredient.type === 'bun') {
-      const bun = constructorItems.find((i) => i.type === 'bun');
-      return bun && bun._id === ingredient._id ? 2 : 0;
-    }
-
-    return constructorItems.filter((i) => i._id === ingredient._id).length;
-  };
+    }),
+    [ingredients]
+  );
 
   const scrollTo = (ref: React.RefObject<HTMLDivElement | null>, tab: TTab): void => {
     ref.current?.scrollIntoView({ behavior: 'smooth' });
     setCurrentTab(tab);
   };
 
-  useEffect((): (() => void) => {
+  useEffect(() => {
     const handleScroll = (): void => {
       if (!containerRef.current) return;
 
       const containerTop = containerRef.current.getBoundingClientRect().top;
 
-      const sections: { type: TTab; ref: React.RefObject<HTMLDivElement | null> }[] = [
-        { type: 'bun', ref: bunRef },
-        { type: 'main', ref: mainRef },
-        { type: 'sauce', ref: sauceRef },
+      const sections = [
+        { type: 'bun' as TTab, ref: bunRef },
+        { type: 'main' as TTab, ref: mainRef },
+        { type: 'sauce' as TTab, ref: sauceRef },
       ];
 
-      let closest: { type: TTab; ref: React.RefObject<HTMLDivElement | null> } =
-        sections[0];
-
+      let closest = sections[0];
       let minDiff = Infinity;
 
       sections.forEach((section) => {
@@ -95,7 +83,7 @@ export const BurgerIngredients = ({
           <Tab
             value="bun"
             active={currentTab === 'bun'}
-            onClick={(): void => scrollTo(bunRef, 'bun')}
+            onClick={() => scrollTo(bunRef, 'bun')}
           >
             Булки
           </Tab>
@@ -103,7 +91,7 @@ export const BurgerIngredients = ({
           <Tab
             value="sauce"
             active={currentTab === 'sauce'}
-            onClick={(): void => scrollTo(sauceRef, 'sauce')}
+            onClick={() => scrollTo(sauceRef, 'sauce')}
           >
             Соусы
           </Tab>
@@ -111,7 +99,7 @@ export const BurgerIngredients = ({
           <Tab
             value="main"
             active={currentTab === 'main'}
-            onClick={(): void => scrollTo(mainRef, 'main')}
+            onClick={() => scrollTo(mainRef, 'main')}
           >
             Начинки
           </Tab>
@@ -121,100 +109,43 @@ export const BurgerIngredients = ({
       <div ref={containerRef} className={`${styles.scroll} custom-scroll`}>
         <section ref={bunRef} className="mt-10">
           <h2 className="text text_type_main-medium mb-6">Булки</h2>
-
           <ul className={styles.grid}>
-            {grouped.bun.map((item) => {
-              const count = getCount(item);
-
-              return (
-                <li
-                  key={item._id}
-                  className={styles.card}
-                  onClick={(): void => onIngredientClick(item)}
-                >
-                  {count > 0 && (
-                    <Counter count={count} size="default" extraClass={styles.counter} />
-                  )}
-
-                  <img src={item.image} alt={item.name} className={styles.image} />
-
-                  <div className={styles.price}>
-                    <p className="text text_type_digits-default mr-2">{item.price}</p>
-                    <CurrencyIcon type="primary" />
-                  </div>
-
-                  <p className={`${styles.name} text text_type_main-default`}>
-                    {item.name}
-                  </p>
-                </li>
-              );
-            })}
+            {grouped.bun.map((item) => (
+              <Ingredient
+                key={item._id}
+                item={item}
+                count={counts[item._id] || 0}
+                onClick={() => dispatch(setIngredient(item))}
+              />
+            ))}
           </ul>
         </section>
 
         <section ref={sauceRef} className="mt-10 mb-10">
           <h2 className="text text_type_main-medium mb-6">Соусы</h2>
-
           <ul className={styles.grid}>
-            {grouped.sauce.map((item) => {
-              const count = getCount(item);
-
-              return (
-                <li
-                  key={item._id}
-                  className={styles.card}
-                  onClick={(): void => onIngredientClick(item)}
-                >
-                  {count > 0 && (
-                    <Counter count={count} size="default" extraClass={styles.counter} />
-                  )}
-
-                  <img src={item.image} alt={item.name} className={styles.image} />
-
-                  <div className={styles.price}>
-                    <p className="text text_type_digits-default mr-2">{item.price}</p>
-                    <CurrencyIcon type="primary" />
-                  </div>
-
-                  <p className={`${styles.name} text text_type_main-default`}>
-                    {item.name}
-                  </p>
-                </li>
-              );
-            })}
+            {grouped.sauce.map((item) => (
+              <Ingredient
+                key={item._id}
+                item={item}
+                count={counts[item._id] || 0}
+                onClick={() => dispatch(setIngredient(item))}
+              />
+            ))}
           </ul>
         </section>
 
         <section ref={mainRef} className="mt-10">
           <h2 className="text text_type_main-medium mb-6">Начинки</h2>
-
           <ul className={styles.grid}>
-            {grouped.main.map((item) => {
-              const count = getCount(item);
-
-              return (
-                <li
-                  key={item._id}
-                  className={styles.card}
-                  onClick={(): void => onIngredientClick(item)}
-                >
-                  {count > 0 && (
-                    <Counter count={count} size="default" extraClass={styles.counter} />
-                  )}
-
-                  <img src={item.image} alt={item.name} className={styles.image} />
-
-                  <div className={`${styles.price} mt-1`}>
-                    <p className="text text_type_digits-default mr-2">{item.price}</p>
-                    <CurrencyIcon type="primary" />
-                  </div>
-
-                  <p className={`${styles.name} text text_type_main-default`}>
-                    {item.name}
-                  </p>
-                </li>
-              );
-            })}
+            {grouped.main.map((item) => (
+              <Ingredient
+                key={item._id}
+                item={item}
+                count={counts[item._id] || 0}
+                onClick={() => dispatch(setIngredient(item))}
+              />
+            ))}
           </ul>
         </section>
       </div>

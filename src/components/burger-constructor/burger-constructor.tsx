@@ -2,33 +2,71 @@ import {
   ConstructorElement,
   Button,
   CurrencyIcon,
-  DragIcon,
 } from '@krgaa/react-developer-burger-ui-components';
-import { useMemo } from 'react';
+import { useDrop, useDragLayer } from 'react-dnd';
+
+import { selectTotalPrice, addIngredient } from '@services/constructor/slice';
+import { useAppDispatch, useAppSelector } from '@services/hooks';
+import { createOrderThunk } from '@services/order/thunks';
+
+import { DraggableItem } from './draggable-item/draggable-item';
 
 import type { TIngredient } from '@utils/types';
 
 import styles from './burger-constructor.module.css';
 
-type Props = {
-  items: TIngredient[];
-  onOrder: () => void;
+type DragItem = TIngredient | null;
+
+type DragLayerCollected = {
+  isDragging: boolean;
+  item: TIngredient | null;
 };
 
-export const BurgerConstructor = ({ items, onOrder }: Props): React.JSX.Element => {
-  const bun = useMemo(() => items.find((i) => i.type === 'bun'), [items]);
-  const rest = useMemo(() => items.filter((i) => i.type !== 'bun'), [items]);
+export const BurgerConstructor = (): React.JSX.Element => {
+  const dispatch = useAppDispatch();
 
-  const totalPrice = useMemo(() => {
-    const bunPrice = bun ? bun.price * 2 : 0;
-    const restPrice = rest.reduce((sum, i) => sum + i.price, 0);
-    return bunPrice + restPrice;
-  }, [bun, rest]);
+  const { bun, ingredients } = useAppSelector((s) => s.constructorBurger);
+  const totalPrice = useAppSelector(selectTotalPrice);
+
+  const [, dropRef] = useDrop<TIngredient, void, { isOver: boolean; canDrop: boolean }>({
+    accept: 'ingredient',
+    drop: (item) => {
+      dispatch(addIngredient(item));
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+      canDrop: monitor.canDrop(),
+    }),
+  });
+
+  const { isDragging, item } = useDragLayer<DragLayerCollected, DragItem>((monitor) => ({
+    isDragging: monitor.isDragging(),
+    item: monitor.getItem(),
+  }));
+
+  const draggingType = item?.type;
+
+  const highlightBun = isDragging && draggingType === 'bun' && !bun;
+
+  const highlightIngredient =
+    isDragging && draggingType !== 'bun' && ingredients.length === 0;
+
+  const handleOrder = (): void => {
+    if (!bun) return;
+
+    const ids = [bun._id, ...ingredients.map((i) => i._id), bun._id];
+
+    void dispatch(createOrderThunk(ids));
+  };
+
+  const setDropRef = (node: HTMLElement | null): void => {
+    dropRef(node);
+  };
 
   return (
-    <section className={styles.burger_constructor}>
-      {bun && (
-        <div className="mb-4 ml-8">
+    <section ref={setDropRef} className={styles.burger_constructor}>
+      {bun ? (
+        <div className="mb-4 ml-8 mt-1">
           <ConstructorElement
             type="top"
             isLocked
@@ -37,25 +75,33 @@ export const BurgerConstructor = ({ items, onOrder }: Props): React.JSX.Element 
             thumbnail={bun.image}
           />
         </div>
+      ) : (
+        <div
+          className={`${styles.placeholder} ${styles.placeholder_top} ${
+            highlightBun ? styles.active_drop : ''
+          } text text_type_main-default mb-4 ml-8 mt-1`}
+        >
+          Выберите булки
+        </div>
       )}
 
       <div className={`${styles.scroll} custom-scroll`}>
-        {rest.map((item) => (
-          <div key={item._id} className={styles.item}>
-            <div className={styles.drag}>
-              <DragIcon type="primary" />
-            </div>
-
-            <ConstructorElement
-              text={item.name}
-              price={item.price}
-              thumbnail={item.image}
-            />
+        {ingredients.length === 0 && (
+          <div
+            className={`${styles.placeholder} ${
+              highlightIngredient ? styles.active_drop : ''
+            } ml-8 mb-1 mt-1 text text_type_main-default`}
+          >
+            Выберите начинку
           </div>
+        )}
+
+        {ingredients.map((item, index) => (
+          <DraggableItem key={item.uuid} item={item} index={index} />
         ))}
       </div>
 
-      {bun && (
+      {bun ? (
         <div className="mt-4 ml-8">
           <ConstructorElement
             type="bottom"
@@ -65,6 +111,14 @@ export const BurgerConstructor = ({ items, onOrder }: Props): React.JSX.Element 
             thumbnail={bun.image}
           />
         </div>
+      ) : (
+        <div
+          className={`${styles.placeholder} ${styles.placeholder_bottom} ${
+            highlightBun ? styles.active_drop : ''
+          } text text_type_main-default mt-4 ml-8`}
+        >
+          Выберите булки
+        </div>
       )}
 
       <div className={`${styles.footer} mt-10 mr-8`}>
@@ -73,7 +127,13 @@ export const BurgerConstructor = ({ items, onOrder }: Props): React.JSX.Element 
           <CurrencyIcon type="primary" />
         </div>
 
-        <Button htmlType="button" type="primary" size="large" onClick={onOrder}>
+        <Button
+          htmlType="button"
+          type="primary"
+          size="large"
+          onClick={handleOrder}
+          disabled={!bun}
+        >
           Оформить заказ
         </Button>
       </div>

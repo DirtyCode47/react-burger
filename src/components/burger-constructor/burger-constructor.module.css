@@ -15,18 +15,6 @@
   overflow-y: auto;
 }
 
-.drag {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 24px;
-  cursor: grab;
-}
-
-.drag:active {
-  cursor: grabbing;
-}
-
 .footer {
   display: flex;
   justify-content: flex-end;
@@ -38,8 +26,31 @@
   align-items: center;
 }
 
-.item {
+.placeholder {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 8px;
+  width: 90%;
+  height: 80px;
+  color: #fff;
+  font-size: 16px;
+  background: #2f2f37;
+  border: none;
+  border-radius: 40px;
+}
+
+.placeholder_top {
+  border-top-left-radius: 100px;
+  border-top-right-radius: 100px;
+}
+
+.placeholder_bottom {
+  border-bottom-right-radius: 100px;
+  border-bottom-left-radius: 100px;
+}
+
+.active_drop {
+  background: rgb(76 76 255 / 10%);
+  outline: 2px dashed #4c4cff;
+  transition: all 0.15s ease;
 }
