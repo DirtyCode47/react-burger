@@ -3,16 +3,13 @@ import { useMemo, useRef, useState, useEffect } from 'react';
 
 import { Ingredient } from '@components/ingredient/ingredient';
 import { selectIngredientCounts } from '@services/constructor/slice';
-import { useAppSelector, useAppDispatch } from '@services/hooks';
-import { setIngredient } from '@services/modal/slice';
+import { useAppSelector } from '@services/hooks';
 
 import styles from './burger-ingredients.module.css';
 
 type TTab = 'bun' | 'main' | 'sauce';
 
 export const BurgerIngredients = (): React.JSX.Element => {
-  const dispatch = useAppDispatch();
-
   const ingredients = useAppSelector((s) => s.ingredients.items);
   const counts = useAppSelector(selectIngredientCounts);
 
@@ -111,12 +108,7 @@ export const BurgerIngredients = (): React.JSX.Element => {
           <h2 className="text text_type_main-medium mb-6">Булки</h2>
           <ul className={styles.grid}>
             {grouped.bun.map((item) => (
-              <Ingredient
-                key={item._id}
-                item={item}
-                count={counts[item._id] || 0}
-                onClick={() => dispatch(setIngredient(item))}
-              />
+              <Ingredient key={item._id} item={item} count={counts[item._id] || 0} />
             ))}
           </ul>
         </section>
@@ -125,12 +117,7 @@ export const BurgerIngredients = (): React.JSX.Element => {
           <h2 className="text text_type_main-medium mb-6">Соусы</h2>
           <ul className={styles.grid}>
             {grouped.sauce.map((item) => (
-              <Ingredient
-                key={item._id}
-                item={item}
-                count={counts[item._id] || 0}
-                onClick={() => dispatch(setIngredient(item))}
-              />
+              <Ingredient key={item._id} item={item} count={counts[item._id] || 0} />
             ))}
           </ul>
         </section>
@@ -139,12 +126,7 @@ export const BurgerIngredients = (): React.JSX.Element => {
           <h2 className="text text_type_main-medium mb-6">Начинки</h2>
           <ul className={styles.grid}>
             {grouped.main.map((item) => (
-              <Ingredient
-                key={item._id}
-                item={item}
-                count={counts[item._id] || 0}
-                onClick={() => dispatch(setIngredient(item))}
-              />
+              <Ingredient key={item._id} item={item} count={counts[item._id] || 0} />
             ))}
           </ul>
         </section>

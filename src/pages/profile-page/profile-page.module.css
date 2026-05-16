@@ -1,0 +1,33 @@
+.page {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 60px;
+  width: 1240px;
+  margin: 0 auto;
+}
+
+.menu {
+  width: 320px;
+}
+
+.link,
+.button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 64px;
+  padding: 0;
+  color: var(--text-inactive-color);
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.linkActive {
+  color: var(--text-primary-color);
+}
+
+.content {
+  width: 480px;
+}

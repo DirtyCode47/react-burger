@@ -13,6 +13,11 @@ export type TIngredient = {
   __v: number;
 };
 
+export type TUser = {
+  email: string;
+  name: string;
+};
+
 export type TIngredientsResponse = {
   success: boolean;
   data: TIngredient[];
@@ -23,4 +28,27 @@ export type TOrderResponse = {
   order: {
     number: number;
   };
+};
+
+export type TAuthResponse = {
+  success: boolean;
+  user: TUser;
+  accessToken: string;
+  refreshToken: string;
+};
+
+export type TRefreshTokenResponse = {
+  success: boolean;
+  accessToken: string;
+  refreshToken: string;
+};
+
+export type TUserResponse = {
+  success: boolean;
+  user: TUser;
+};
+
+export type TMessageResponse = {
+  success: boolean;
+  message: string;
 };

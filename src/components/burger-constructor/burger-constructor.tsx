@@ -4,6 +4,7 @@ import {
   CurrencyIcon,
 } from '@krgaa/react-developer-burger-ui-components';
 import { useDrop, useDragLayer } from 'react-dnd';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { selectTotalPrice, addIngredient } from '@services/constructor/slice';
 import { useAppDispatch, useAppSelector } from '@services/hooks';
@@ -24,9 +25,12 @@ type DragLayerCollected = {
 
 export const BurgerConstructor = (): React.JSX.Element => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const { bun, ingredients } = useAppSelector((s) => s.constructorBurger);
   const totalPrice = useAppSelector(selectTotalPrice);
+  const user = useAppSelector((s) => s.auth.user);
 
   const [, dropRef] = useDrop<TIngredient, void, { isOver: boolean; canDrop: boolean }>({
     accept: 'ingredient',
@@ -53,6 +57,11 @@ export const BurgerConstructor = (): React.JSX.Element => {
 
   const handleOrder = (): void => {
     if (!bun) return;
+
+    if (!user) {
+      void navigate('/login', { state: { from: location } });
+      return;
+    }
 
     const ids = [bun._id, ...ingredients.map((i) => i._id), bun._id];
 
