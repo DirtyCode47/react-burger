@@ -1,3 +1,5 @@
 .container {
-  width: 100%;
+  width: 860px;
+  max-height: calc(100vh - 128px);
+  overflow-y: auto;
 }
