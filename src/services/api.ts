@@ -5,6 +5,7 @@ import type {
   TIngredientsResponse,
   TMessageResponse,
   TOrderResponse,
+  TOrdersResponse,
   TRefreshTokenResponse,
   TUserResponse,
 } from '@utils/types';
@@ -42,7 +43,7 @@ export const removeTokens = (): void => {
   localStorage.removeItem('refreshToken');
 };
 
-const refreshToken = async (): Promise<TRefreshTokenResponse> => {
+export const refreshToken = async (): Promise<TRefreshTokenResponse> => {
   const data = await request<TRefreshTokenResponse>('/auth/token', {
     method: 'POST',
     headers: {
@@ -177,4 +178,8 @@ export const resetPassword = async (data: {
     },
     body: JSON.stringify(data),
   });
+};
+
+export const getOrderByNumber = async (number: string): Promise<TOrdersResponse> => {
+  return await request<TOrdersResponse>(`/orders/${number}`);
 };
