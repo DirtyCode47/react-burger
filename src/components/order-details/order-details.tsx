@@ -7,7 +7,9 @@ export const OrderDetails = (): React.JSX.Element => {
 
   return (
     <div className={styles.container}>
-      <p className="text text_type_digits-large mb-8">{number}</p>
+      <p className="text text_type_digits-large mb-8" data-testid="order-number">
+        {number}
+      </p>
 
       <p className="text text_type_main-medium mb-15">идентификатор заказа</p>
 

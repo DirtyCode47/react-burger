@@ -35,7 +35,11 @@ export const Modal = ({ title, children, onClose }: Props): React.JSX.Element =>
     <div className={`${styles.root_style}`}>
       <ModalOverlay onClose={onClose} />
 
-      <div className={styles.modal} onClick={(e): void => e.stopPropagation()}>
+      <div
+        className={styles.modal}
+        data-testid="modal"
+        onClick={(e): void => e.stopPropagation()}
+      >
         <header className={styles.header}>
           <p className="text text_type_main-medium">{title}</p>
           <CloseIcon type="primary" onClick={onClose} />
