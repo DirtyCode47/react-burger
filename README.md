@@ -1,3 +1,4 @@
+Ссылка на деплой: https://dirtycode47.github.io/react-burger/
 # Стартер на TypeScript для проекта Stellar Burger
 
 ## Процедура создания коммита с проверками

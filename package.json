@@ -1,5 +1,6 @@
 {
   "name": "vite_bundler",
+  "homepage": "https://DirtyCode47.github.io/react-burger",
   "private": true,
   "version": "0.0.0",
   "type": "module",

@@ -73,9 +73,13 @@ export const BurgerConstructor = (): React.JSX.Element => {
   };
 
   return (
-    <section ref={setDropRef} className={styles.burger_constructor}>
+    <section
+      ref={setDropRef}
+      className={styles.burger_constructor}
+      data-testid="burger-constructor"
+    >
       {bun ? (
-        <div className="mb-4 ml-8 mt-1">
+        <div className="mb-4 ml-8 mt-1" data-testid="constructor-bun-top">
           <ConstructorElement
             type="top"
             isLocked
@@ -94,7 +98,10 @@ export const BurgerConstructor = (): React.JSX.Element => {
         </div>
       )}
 
-      <div className={`${styles.scroll} custom-scroll`}>
+      <div
+        className={`${styles.scroll} custom-scroll`}
+        data-testid="constructor-ingredients"
+      >
         {ingredients.length === 0 && (
           <div
             className={`${styles.placeholder} ${
@@ -111,7 +118,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
       </div>
 
       {bun ? (
-        <div className="mt-4 ml-8">
+        <div className="mt-4 ml-8" data-testid="constructor-bun-bottom">
           <ConstructorElement
             type="bottom"
             isLocked
@@ -142,6 +149,7 @@ export const BurgerConstructor = (): React.JSX.Element => {
           size="large"
           onClick={handleOrder}
           disabled={!bun}
+          data-testid="order-button"
         >
           Оформить заказ
         </Button>

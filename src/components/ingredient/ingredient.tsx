@@ -28,6 +28,7 @@ export const Ingredient = ({ item, count }: Props): React.JSX.Element => {
       }}
       className={styles.card}
       style={{ opacity: isDragging ? 0.5 : 1 }}
+      data-testid={`ingredient-${item._id}`}
     >
       <Link
         className={styles.link}
